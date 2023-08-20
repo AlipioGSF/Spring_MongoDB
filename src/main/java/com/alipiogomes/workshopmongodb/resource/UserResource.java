@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.alipiogomes.workshopmongodb.domain.Post;
 import com.alipiogomes.workshopmongodb.domain.User;
 import com.alipiogomes.workshopmongodb.dto.UserDTO;
 import com.alipiogomes.workshopmongodb.services.UserService;
@@ -56,6 +58,20 @@ public class UserResource implements Serializable{
 	public ResponseEntity<Void> delete(@PathVariable String id){
 		userService.delete(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Void> update(@RequestBody UserDTO userDto, @PathVariable String id){
+		User obj = userService.fromDTO(userDto);
+		obj.setId(id);
+		obj = userService.update(obj);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping(value = "/{id}/posts")
+	public ResponseEntity<List<Post>> getPost(@PathVariable String id){
+		List<Post> posts = userService.findById(id).getPosts();
+		return ResponseEntity.ok().body(posts);
 	}
 
 }
