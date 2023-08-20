@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
+import com.alipiogomes.workshopmongodb.domain.Comment;
 import com.alipiogomes.workshopmongodb.domain.Post;
 import com.alipiogomes.workshopmongodb.domain.User;
 import com.alipiogomes.workshopmongodb.dto.AuthorDTO;
+import com.alipiogomes.workshopmongodb.repositories.CommentRepository;
 import com.alipiogomes.workshopmongodb.repositories.PostRepository;
 import com.alipiogomes.workshopmongodb.repositories.UserRepository;
 
@@ -21,7 +23,8 @@ public class Instantiation implements CommandLineRunner {
 	private UserRepository userRepository;
 	@Autowired
 	private PostRepository postRepository;
-	
+	@Autowired
+	private CommentRepository commentRepository;
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -31,6 +34,7 @@ public class Instantiation implements CommandLineRunner {
 		
 		userRepository.deleteAll();
 		postRepository.deleteAll();
+		commentRepository.deleteAll();
 		
 		User alipio = new User(null, "Alipio", "alipio@gmail.com");
 		User leo = new User(null, "Leo", "leo@gmail.com");
@@ -46,6 +50,15 @@ public class Instantiation implements CommandLineRunner {
 		
 		alipio.getPosts().addAll(Arrays.asList(post1, post2));
 		userRepository.save(alipio);
+		
+		Comment comment1 = new Comment("Olá, este é meu comentário", sdf.parse("10/10/2023"), new AuthorDTO(leo));
+		Comment comment2 = new Comment("Vou comentar aqui também", sdf.parse("10/10/2023"), new AuthorDTO(gabs));
+
+		commentRepository.saveAll(Arrays.asList(comment1, comment2));
+		
+		post1.setComments(Arrays.asList(comment1, comment2));
+		postRepository.save(post1);
+		
 	}
 	
 }

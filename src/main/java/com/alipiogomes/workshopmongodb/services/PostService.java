@@ -1,6 +1,7 @@
 package com.alipiogomes.workshopmongodb.services;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,14 @@ public class PostService implements Serializable{
 		}
 		return post;
 	}
-
 	
+	public List<Post> findByTitle(String txt){
+		List<Post> posts = postRepository.searchTitle(txt);
+		if(posts == null) {
+			throw new ObjectNotFoundException(txt);
+		}
+		return posts;
+		
+	}
 	
 }
